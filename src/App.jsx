@@ -3,17 +3,27 @@ import axios from 'axios';
 
 import './App.css'
 import Navbar from './components/Navbar'
+import ProductCard from './components/ProductCard';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cart, setCart]       = useState([]);
 
 
+// add to cart
+const addToCart  = (product) => {
+
+    let updatedCart = [...cart, product];
+
+    setCart(updatedCart);
+
+}
 
   useEffect(() => {
 
     setLoading(true);
-    
+
     axios.get('https://fakestoreapi.com/products')
       .then((response) => {
 
@@ -23,7 +33,7 @@ function App() {
 
       })
       .catch((error) => {
-        console.log(error.message)
+        console.log(error.message);
       })
       .finally(() => {
         setLoading(false);
@@ -35,26 +45,26 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      <Navbar cart={cart} />
       <div className='container'>
         <h1 className='py-3 text-center'>Fake Store Application</h1>
 
         {
-          (loading == true) ? <div class="d-flex justify-content-center">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+          (loading == true) ? <div className="d-flex justify-content-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div> : null
         }
 
 
-        {
-          products.map((product) => {
-            return <>
-              <h3>{product.title}</h3>
-            </>
-          })
-        }
+        <div className='row g-4'>
+          {
+            products.map((product) => {
+              return <ProductCard  product={product} addToCart={addToCart} key={product.id} />
+            })
+          }
+        </div>
       </div>
     </>
   )
